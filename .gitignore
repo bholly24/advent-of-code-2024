@@ -3,9 +3,11 @@ out/
 !**/src/main/**/out/
 !**/src/test/**/out/
 .idea
+*.iml
 
 ### Mac OS ###
 .DS_Store
 
 ### Do not commit AOC input files ###
 *.txt
+
