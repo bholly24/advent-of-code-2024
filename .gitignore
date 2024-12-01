@@ -8,6 +8,5 @@ out/
 ### Mac OS ###
 .DS_Store
 
-### Do not commit AOC input files ###
-*.txt
-
+### Do not commit AOC input files but allow test inputs ###
+src/main/**/*.txt
