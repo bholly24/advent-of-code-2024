@@ -28,10 +28,9 @@ class DayZero(filePath: String) {
 
     private fun getLinesFromFile(filePath: String) {
         readLines(filePath).forEach {
-            val digits = it.split("   ")
-                .map { i -> i.filter { d -> d.isDigit() } }
-            lineOne.add(digits[0].toInt());
-            lineTwo.add(digits[1].toInt())
+            val digits = it.split(Regex("\\s+")).map(String::toInt)
+            lineOne.add(digits[0])
+            lineTwo.add(digits[1])
         }
     }
 
