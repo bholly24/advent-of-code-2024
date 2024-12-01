@@ -14,16 +14,14 @@ class DayZero(filePath: String) {
     fun partA(): Int {
         lineOne.sort()
         lineTwo.sort()
-        val diff = lineOne.foldIndexed(0) { index, acc, _ ->
-            acc + abs(lineOne[index] - lineTwo[index])
-        }
+        val diff = lineOne.zip(lineTwo).sumOf { (a, b) -> abs(a - b) }
 
         println("Total diff is $diff")
         return diff
     }
 
     fun partB(): Int {
-        val similarityScore = lineOne.fold(0) { acc, i -> acc + i * lineTwo.count { it == i } }
+        val similarityScore = lineOne.sumOf { it * lineTwo.count { i -> it == i } }
         println("Total similarity score is $similarityScore")
         return similarityScore
     }
