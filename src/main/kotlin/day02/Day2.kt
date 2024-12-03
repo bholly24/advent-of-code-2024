@@ -11,17 +11,15 @@ class Day2(filePath: String) {
         return sum
     }
 
-
     fun partB(): Int {
-        val oneLine = lines.reduce { a, b -> a + b }
         val dont = Regex("don't\\(\\)")
         val canDo = Regex("do\\(\\)")
 
-        val doLine = oneLine
-            .replace(Regex("$dont.*?$canDo"), "")
-            .replace(Regex("$dont.*"), "") // in case don't is last instruction
-        val sum = getSums(doLine)
+        val doLine = lines
+            .joinToString("")
+            .replace(Regex("$dont.*?$canDo|$dont.*"), "")
 
+        val sum = getSums(doLine)
         println("My sum with do/don't instructions is $sum")
         return sum
     }
