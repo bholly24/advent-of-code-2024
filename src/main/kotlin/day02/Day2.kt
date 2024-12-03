@@ -27,17 +27,11 @@ class Day2(filePath: String) {
     }
 
     private fun getSums(line: String): Int {
-        return line.split(Regex("mul(?=\\(\\d+,\\d+\\))"))
-            .sumOf { s ->
-                if (!s.contains(Regex("^\\(\\d+,\\d+\\)"))) {
-                    0
-                } else {
-                    s
-                        .replace(Regex("^\\(|\\).*"), "")
-                        .split(",")
-                        .fold(1) { a, b -> a * b.toInt()}
-                        .toInt()
-                }
+        val mulPattern = Regex("mul\\((\\d+),(\\d+)\\)")
+        return mulPattern.findAll(line)
+            .sumOf { matchResult ->
+                val (first, second) = matchResult.destructured
+                first.toInt() * second.toInt()
             }
     }
 }
