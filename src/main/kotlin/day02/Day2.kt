@@ -13,9 +13,14 @@ class Day2(filePath: String) {
 
 
     fun partB(): Int {
-        val line = lines.reduce { a, b -> a + b }
-        val newLine = line.replace(Regex("don't\\(\\).*?do\\(\\)"), "").replace(Regex("don't\\(\\).*"), "")
-        val sum = getSums(newLine)
+        val oneLine = lines.reduce { a, b -> a + b }
+        val dont = Regex("don't\\(\\)")
+        val canDo = Regex("do\\(\\)")
+
+        val doLine = oneLine
+            .replace(Regex("$dont.*?$canDo"), "")
+            .replace(Regex("$dont.*"), "") // in case don't is last instruction
+        val sum = getSums(doLine)
 
         println("My sum with do/don't instructions is $sum")
         return sum
@@ -24,13 +29,16 @@ class Day2(filePath: String) {
     private fun getSums(line: String): Int {
         return line.split(Regex("mul(?=\\(\\d+,\\d+\\))"))
             .sumOf { s ->
+
                 if (!(s.startsWith("(") && s.contains(","))) {
                     0
                 } else {
-                    val spl = s.split(",")
-                    val dOne = spl[0].replace("(", "").toInt()
-                    val dTwo = spl[1].split(")")[0].toInt()
-                    dOne * dTwo
+                    s
+                        .substringBefore(")")
+                        .removePrefix("(")
+                        .split(",")
+                        .fold(1) { a, b -> a * b.toInt()}
+                        .toInt()
                 }
             }
     }
