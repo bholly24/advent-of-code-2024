@@ -29,7 +29,6 @@ class Day2(filePath: String) {
     private fun getSums(line: String): Int {
         return line.split(Regex("mul(?=\\(\\d+,\\d+\\))"))
             .sumOf { s ->
-
                 if (!(s.startsWith("(") && s.contains(","))) {
                     0
                 } else {
