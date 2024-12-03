@@ -3,10 +3,12 @@ package day02
 import java.io.File
 
 class Day2(filePath: String) {
-    private val lines = File(filePath).readLines()
+    private val instructions = File(filePath)
+        .readLines()
+        .joinToString("")
 
     fun partA(): Int {
-        val sum = lines.sumOf { getSums(it) }
+        val sum = getSums(instructions)
         println("Total sum of multiplications is $sum")
         return sum
     }
@@ -15,9 +17,7 @@ class Day2(filePath: String) {
         val dont = Regex("don't\\(\\)")
         val canDo = Regex("do\\(\\)")
 
-        val doLine = lines
-            .joinToString("")
-            .replace(Regex("$dont.*?$canDo|$dont.*"), "")
+        val doLine = instructions.replace(Regex("$dont.*?$canDo|$dont.*"), "")
 
         val sum = getSums(doLine)
         println("My sum with do/don't instructions is $sum")
