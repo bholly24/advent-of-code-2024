@@ -59,9 +59,7 @@ class DayThree(path: String) {
         for (y in lines.indices) {
             for (x in lines[0].indices) {
                 val c = lines[y][x]
-                if (c != 'A') continue
-                val coordBoundaries = listOf(y + 1 < ymax, y - 1 >= 0, x + 1 < xmax, x - 1 >= 0)
-                if (coordBoundaries.any { !it }) continue
+                if (c != 'A' || !diagonalsAreInBounds(x, y)) continue
                 val charList = listOf(
                     lines[y + 1][x + 1],
                     lines[y + 1][x - 1],
@@ -88,5 +86,9 @@ class DayThree(path: String) {
             xmasForward.findAll(it).count() + xmasBackward.findAll(it).count()
         }
         return xmasCounter
+    }
+
+    private fun diagonalsAreInBounds(x: Int, y: Int): Boolean {
+        return listOf(y + 1 < ymax, y - 1 >= 0, x + 1 < xmax, x - 1 >= 0).all { it }
     }
 }
