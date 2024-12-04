@@ -111,11 +111,8 @@ class DayThree(path: String) {
     private fun countByLines(lines: List<String>): Int {
         val xmasForward = Regex("XMAS")
         val xmasBackward = Regex("SAMX")
-        val doubleXmas = Regex("XMASAMX|SAMXMAS")
         val xmasCounter = lines.sumOf {
-            var c = xmasForward.findAll(it).count() + xmasBackward.findAll(it).count()
-            println("$c for $it")
-            c
+            xmasForward.findAll(it).count() + xmasBackward.findAll(it).count()
         }
         return xmasCounter
     }
