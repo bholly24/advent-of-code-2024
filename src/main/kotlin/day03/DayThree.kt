@@ -56,18 +56,14 @@ class DayThree(path: String) {
             for (x in lines[0].length - 1 downTo 0) {
                 val newY = y + (xmax - x - 1)
                 if (newY < ymax) {
-                    println("${newY}, ${x}: ${lines[newY][x]}")
                     st += lines[newY][x]
                 }
             }
             diagonalArray.add(st)
         }
-        val l = countByLines(lines)
-        val c = countByLines(columnArray)
-        val d = countByLines(diagonalArray)
-        val xmasCounter = l + c + d
 
-        println("Counter: $xmasCounter")
+        val xmasCounter = countByLines(lines) + countByLines(columnArray) + countByLines(diagonalArray)
+        println("XMAS counter total is  $xmasCounter")
         return xmasCounter
     }
 
@@ -104,7 +100,7 @@ class DayThree(path: String) {
                 }
             }
         }
-        println("Total sum: $sum")
+        println("The total X-MAS patterns found is $sum")
         return sum
     }
 
