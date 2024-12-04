@@ -17,4 +17,10 @@ import org.junit.jupiter.api.Assertions.*
    val dayThree = DayThree(FileHelper.getAdditionalTestFile(3, "input-small"))
    assertEquals(7, dayThree.partA())
   }
+
+  @Test
+  fun partB() {
+   val dayThree = DayThree(FileHelper.testFileForDay(3))
+   assertEquals(9, dayThree.partB())
+  }
 }

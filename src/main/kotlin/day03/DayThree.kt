@@ -71,15 +71,49 @@ class DayThree(path: String) {
         return xmasCounter
     }
 
+    fun partB(): Int {
+        var sum = 0
+        for (y in lines.indices) {
+            for (x in lines[0].indices) {
+                val c = lines[y][x]
+                if (c == 'A') {
+                    val ym = y + 1 < ymax
+                    val ymin = y - 1 >= 0
+                    val xm = x + 1 < xmax
+                    val xmin = x - 1 >= 0
+
+                    val candidateChars = mutableListOf<Char>()
+
+                    if (ym && xm) {
+                        candidateChars.add(lines[y + 1][x + 1])
+                    }
+                    if (ym && xmin) {
+                        candidateChars.add(lines[y + 1][x - 1])
+                    }
+                    if (ymin && xm) {
+                        candidateChars.add(lines[y - 1][x + 1])
+                    }
+                    if (ymin && xmin) {
+                        candidateChars.add(lines[y - 1][x - 1])
+                    }
+                    if (candidateChars.count { it == 'S' } == 2 && candidateChars.count { it == 'M' } == 2) {
+                        if (candidateChars[0] == candidateChars[1] || candidateChars[0] == candidateChars[2]) {
+                            sum += 1
+                        }
+                    }
+                }
+            }
+        }
+        println("Total sum: $sum")
+        return sum
+    }
+
     private fun countByLines(lines: List<String>): Int {
         val xmasForward = Regex("XMAS")
         val xmasBackward = Regex("SAMX")
         val doubleXmas = Regex("XMASAMX|SAMXMAS")
         val xmasCounter = lines.sumOf {
             var c = xmasForward.findAll(it).count() + xmasBackward.findAll(it).count()
-//            if (it.contains(doubleXmas)) {
-//                c++
-//            }
             println("$c for $it")
             c
         }
