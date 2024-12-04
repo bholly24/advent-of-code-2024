@@ -11,11 +11,7 @@ class DayThree(path: String) {
         val columnArray = mutableListOf<String>()
         lines.forEachIndexed { y, s ->
             s.forEachIndexed { x, c ->
-                if (y == 0) {
-                    columnArray.add(c.toString())
-                } else {
-                    columnArray[x] += c.toString()
-                }
+                if (y == 0) columnArray.add(c.toString()) else columnArray[x] += c.toString()
             }
         }
 
@@ -23,9 +19,7 @@ class DayThree(path: String) {
         for (y in 1 until lines.size) {
             var st = ""
             for (x in lines[0].indices) {
-                if (y + x < ymax) {
-                    st += lines[y + x][x]
-                }
+                if (y + x < ymax) st += lines[y + x][x]
             }
             diagonalArray.add(st)
         }
@@ -33,9 +27,7 @@ class DayThree(path: String) {
         for (x in lines[0].indices) {
             var st = ""
             for (y in lines.indices) {
-                if (y + x < xmax) {
-                    st += lines[y][x + y]
-                }
+                if (y + x < xmax) st += lines[y][x + y]
             }
             diagonalArray.add(st)
         }
@@ -43,10 +35,7 @@ class DayThree(path: String) {
         for (x in lines[0].length - 1 downTo 0) {
             var st = ""
             for (y in lines.indices) {
-                if (x - y >= 0) {
-                    println("$y,${x - y}")
-                    st += lines[y][x - y]
-                }
+                if (x - y >= 0) st += lines[y][x - y]
             }
             diagonalArray.add(st)
         }
@@ -55,9 +44,7 @@ class DayThree(path: String) {
             var st = ""
             for (x in lines[0].length - 1 downTo 0) {
                 val newY = y + (xmax - x - 1)
-                if (newY < ymax) {
-                    st += lines[newY][x]
-                }
+                if (newY < ymax) st += lines[newY][x]
             }
             diagonalArray.add(st)
         }
@@ -72,36 +59,26 @@ class DayThree(path: String) {
         for (y in lines.indices) {
             for (x in lines[0].indices) {
                 val c = lines[y][x]
-                if (c == 'A') {
-                    val ym = y + 1 < ymax
-                    val ymin = y - 1 >= 0
-                    val xm = x + 1 < xmax
-                    val xmin = x - 1 >= 0
-
-                    val candidateChars = mutableListOf<Char>()
-
-                    if (ym && xm) {
-                        candidateChars.add(lines[y + 1][x + 1])
-                    }
-                    if (ym && xmin) {
-                        candidateChars.add(lines[y + 1][x - 1])
-                    }
-                    if (ymin && xm) {
-                        candidateChars.add(lines[y - 1][x + 1])
-                    }
-                    if (ymin && xmin) {
-                        candidateChars.add(lines[y - 1][x - 1])
-                    }
-                    if (candidateChars.count { it == 'S' } == 2 && candidateChars.count { it == 'M' } == 2) {
-                        if (candidateChars[0] == candidateChars[1] || candidateChars[0] == candidateChars[2]) {
-                            sum += 1
-                        }
-                    }
-                }
+                if (c != 'A') continue
+                val coordBoundaries = listOf(y + 1 < ymax, y - 1 >= 0, x + 1 < xmax, x - 1 >= 0)
+                if (coordBoundaries.any { !it }) continue
+                val charList = listOf(
+                    lines[y + 1][x + 1],
+                    lines[y + 1][x - 1],
+                    lines[y - 1][x + 1],
+                    lines[y - 1][x - 1]
+                )
+                if (listIsValidMAS(charList)) sum += 1
             }
         }
         println("The total X-MAS patterns found is $sum")
         return sum
+    }
+
+    private fun listIsValidMAS(charList: List<Char>): Boolean {
+        return charList.count { it == 'S' } == 2 &&
+                charList.count { it == 'M' } == 2 &&
+                (charList[0] == charList[1] || charList[0] == charList[2])
     }
 
     private fun countByLines(lines: List<String>): Int {
