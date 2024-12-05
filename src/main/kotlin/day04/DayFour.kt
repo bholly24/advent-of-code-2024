@@ -11,7 +11,7 @@ class DayFour(filePath: String) {
     fun partA(): Int {
         val totalCorrect = sequences.sumOf {
             val intSequence = it.split(",").map(String::toInt)
-            if (allItemsInOrder(intSequence)) intSequence[(intSequence.size - 1) / 2] else 0
+            if (allItemsInOrder(intSequence)) getMiddleItem(intSequence) else 0
         }
         println("Total correct is $totalCorrect")
         return totalCorrect
@@ -31,14 +31,14 @@ class DayFour(filePath: String) {
                     updatedSequence.removeAt(updatedSequence.indexOf(ins[0]))
                     updatedSequence.add(updatedSequence.indexOf(ins[1]), ins[0])
                 }
-                val s = updatedSequence[(updatedSequence.size - 1) / 2]
-                sumOfFixed += s
+                sumOfFixed += getMiddleItem(updatedSequence)
             }
-
         }
         println("Total correct after fixing is $sumOfFixed")
         return sumOfFixed
     }
+
+    private fun getMiddleItem(updatedSequence: List<Int>) = updatedSequence[(updatedSequence.size - 1) / 2]
 
     private fun allItemsInOrder(intSequence: List<Int>): Boolean {
         return orderInstructions.all { instruction ->
