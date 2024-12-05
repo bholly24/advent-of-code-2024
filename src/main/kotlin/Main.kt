@@ -2,6 +2,7 @@ import day00.DayZero
 import day01.DayOne
 import day02.Day2
 import day03.DayThree
+import day04.DayFour
 import fileHelper.FileHelper
 import printer.AdventPrinter
 
@@ -37,4 +38,7 @@ fun main() {
     AdventPrinter.partTwo(3)
     dayThree.partB()
 
+    val dayFour = DayFour(FileHelper.puzzleFileForDay(4))
+    dayFour.partA()
+    dayFour.partB()
 }

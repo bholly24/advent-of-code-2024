@@ -58,8 +58,7 @@ class DayThree(path: String) {
         var sum = 0
         for (y in lines.indices) {
             for (x in lines[0].indices) {
-                val c = lines[y][x]
-                if (c != 'A' || !diagonalsAreInBounds(x, y)) continue
+                if (lines[y][x] != 'A' || !diagonalsAreInBounds(x, y)) continue
                 val charList = listOf(
                     lines[y + 1][x + 1],
                     lines[y + 1][x - 1],
