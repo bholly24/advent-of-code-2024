@@ -12,6 +12,11 @@ object AdventPrinter {
         println("Day $day has been skipped for now")
     }
 
+    fun tooSlowToRunInAdventLoop(day: Int, part: Char) {
+        divider()
+        println("Whoops, Day $day part $part is too slow to run in our advent loop :|")
+    }
+
     fun partOne(day: Int) {
         divider()
         println("Day $day")

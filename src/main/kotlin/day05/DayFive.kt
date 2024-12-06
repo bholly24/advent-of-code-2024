@@ -19,7 +19,7 @@ class DayFive(path: String) {
                     for (x in grid[0].indices) {
                         val state = guardStateFactory(grid[y][x]) ?: continue
                         val nextIndexDiff = state.getIndexDiffsToCheck()
-                        var nextChar = grid[y + nextIndexDiff.first][x + nextIndexDiff.second]
+                        val nextChar = grid[y + nextIndexDiff.first][x + nextIndexDiff.second]
                         if (nextChar == obstacle) {
                             grid[y][x] = state.getTurnCharacter()
                         } else {
@@ -68,44 +68,20 @@ class DayFive(path: String) {
             try {
                 for (y in indexGrid.indices) {
                     for (x in indexGrid[0].indices) {
-                        val c = indexGrid[y][x].char
-                        when (c) {
-                            '^' -> if (indexGrid[y - 1][x].char != '#') {
-                                indexGrid[y - 1][x].char = '^'
-                                indexGrid[y][x].index++
-                                indexGrid[y][x].char = 'X'
-                            } else {
-                                indexGrid[y][x].char = '>'
-                            }
-
-                            '>' -> if (indexGrid[y][x + 1].char != '#') {
-                                indexGrid[y][x + 1].char = '>'
-                                indexGrid[y][x].char = 'X'
-                                indexGrid[y][x].index++
-                            } else {
-                                indexGrid[y][x].char = 'V'
-                            }
-
-                            'V' -> if (indexGrid[y + 1][x].char != '#') {
-                                indexGrid[y + 1][x].char = 'V'
-                                indexGrid[y][x].char = 'X'
-                                indexGrid[y][x].index++
-                            } else {
-                                indexGrid[y][x].char = '<'
-                            }
-
-                            '<' -> if (indexGrid[y][x - 1].char != '#') {
-                                indexGrid[y][x - 1].char = '<'
-                                indexGrid[y][x].char = 'X'
-                                indexGrid[y][x].index++
-                            } else {
-                                indexGrid[y][x].char = '^'
-                            }
+                        val state = guardStateFactory(indexGrid[y][x].char) ?: continue
+                        val nextIndexDiff = state.getIndexDiffsToCheck()
+                        val nextChar = indexGrid[y + nextIndexDiff.first][x + nextIndexDiff.second].char
+                        if (nextChar == obstacle) {
+                            indexGrid[y][x].char = state.getTurnCharacter()
+                        } else {
+                            indexGrid[y + nextIndexDiff.first][x + nextIndexDiff.second].char = state.getStraightCharacter()
+                            indexGrid[y][x].char = guardPathIndicator
+                            indexGrid[y][x].index++
                         }
                     }
                 }
                 val m = indexGrid.maxOf { it.maxOf { i -> i.index } }
-                if (m > 3) {
+                if (m > 4) {
                     return true
                 }
             } catch (e: IndexOutOfBoundsException) {
@@ -125,7 +101,6 @@ class DayFive(path: String) {
         }
     }
 }
-
 
 data class IndexChar(var char: Char, var index: Int = 0)
 
