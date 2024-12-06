@@ -6,7 +6,6 @@ class DayFive(path: String) {
     private val immutableGrid = File(path).readLines().map { it.toCharArray().toList() }
     private var grid: List<MutableList<Char>> = immutableGrid.map { it.toMutableList() }
     private var indexGrid: List<List<IndexChar>> = immutableGrid.map { it.map { c -> IndexChar(c) } }
-    private var indexChange = ""
     private val obstacle = '#'
     private val guardPathIndicator = 'X'
     private val untrammeledPathIndicator = '.'
@@ -39,6 +38,7 @@ class DayFive(path: String) {
     }
 
     fun partB(): Int {
+        // Ensure grid has been run through to try and slightly optimize by only traveling the trammeled path
         partA()
         var loopsCreated = 0
         for (y in indexGrid.indices) {
@@ -48,7 +48,6 @@ class DayFive(path: String) {
                     grid[y][x] != obstacle &&
                     indexGrid[y][x].char == untrammeledPathIndicator) {
                     indexGrid[y][x].char = obstacle
-                    indexChange = "$y,$x"
                     if (guardCaughtInLoop(indexGrid)) {
                         loopsCreated++
                     }
