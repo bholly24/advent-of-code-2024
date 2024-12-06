@@ -81,12 +81,15 @@ class DayFive(path: String) {
         while (true) {
             val y = guardIndex.first
             val x = guardIndex.second
-            val state = guardStateFactory(indexGrid[y][x].char) ?: continue
+
+            val state = guardStateFactory(indexGrid[y][x].char) ?: throw Error("This should be a guard")
             val nextIndexDiff = state.getIndexDiffsToCheck()
             val nextY = y + nextIndexDiff.first
             val nextX = x + nextIndexDiff.second
+
             if (nextY !in grid.indices || nextX !in grid[0].indices) return false
             val nextChar = indexGrid[nextY][nextX].char
+
             if (nextChar == obstacle) {
                 indexGrid[y][x].char = state.getTurnCharacter()
             } else {
