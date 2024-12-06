@@ -49,6 +49,6 @@ fun main() {
     val dayFive = DayFive(FileHelper.puzzleFileForDay(5))
     dayFive.partA()
 
-    AdventPrinter.tooSlowToRunInAdventLoop(5, 'B')
-    // dayFive.partB()
+    AdventPrinter.partTwo(5)
+    dayFive.partB()
 }

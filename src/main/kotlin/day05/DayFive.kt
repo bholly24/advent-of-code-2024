@@ -69,35 +69,38 @@ class DayFive(path: String) {
     }
 
     private fun guardCaughtInLoop(indexGrid: List<List<IndexChar>>): Boolean {
-        var ranOffTheGrid = false
-        var guardStuckInLoop = false
-
-        while (!ranOffTheGrid || !guardStuckInLoop) {
-            try {
-                for (y in indexGrid.indices) {
-                    for (x in indexGrid[0].indices) {
-                        val state = guardStateFactory(indexGrid[y][x].char) ?: continue
-                        val nextIndexDiff = state.getIndexDiffsToCheck()
-                        val nextChar = indexGrid[y + nextIndexDiff.first][x + nextIndexDiff.second].char
-                        if (nextChar == obstacle) {
-                            indexGrid[y][x].char = state.getTurnCharacter()
-                        } else {
-                            indexGrid[y + nextIndexDiff.first][x + nextIndexDiff.second].char =
-                                state.getStraightCharacter()
-                            indexGrid[y][x].char = guardPathIndicator
-                            indexGrid[y][x].index++
-                        }
-                    }
+        var guardIndex = Pair(0, 0)
+        for (y in immutableGrid.indices) {
+            for (x in immutableGrid[0].indices) {
+                if (immutableGrid[y][x] == '^') {
+                    guardIndex = Pair(y, x)
+                    break
                 }
-                val m = indexGrid.maxOf { it.maxOf { i -> i.index } }
-                if (m > 4) {
-                    return true
-                }
-            } catch (e: IndexOutOfBoundsException) {
-                return false
             }
         }
-        return false
+        while (true) {
+            val y = guardIndex.first
+            val x = guardIndex.second
+            val state = guardStateFactory(indexGrid[y][x].char) ?: continue
+            val nextIndexDiff = state.getIndexDiffsToCheck()
+            val nextY = y + nextIndexDiff.first
+            val nextX = x + nextIndexDiff.second
+            if (nextY !in grid.indices || nextX !in grid[0].indices) return false
+            val nextChar = indexGrid[nextY][nextX].char
+            if (nextChar == obstacle) {
+                indexGrid[y][x].char = state.getTurnCharacter()
+            } else {
+                indexGrid[nextY][nextX].char = state.getStraightCharacter()
+                guardIndex = Pair(nextY, nextX)
+                indexGrid[y][x].char = guardPathIndicator
+                indexGrid[y][x].index++
+                if (indexGrid[y][x].guardOrientations.contains(state.getStraightCharacter())) {
+                    return true
+                } else {
+                    indexGrid[y][x].guardOrientations.add(state.getStraightCharacter())
+                }
+            }
+        }
     }
 
     private fun guardStateFactory(c: Char): GuardState? {
