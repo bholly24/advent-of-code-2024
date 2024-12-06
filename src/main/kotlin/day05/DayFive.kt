@@ -7,6 +7,8 @@ class DayFive(path: String) {
     private var grid: List<MutableList<Char>> = immutableGrid.map { it.toMutableList() }
     private var indexGrid: List<List<IndexChar>> = immutableGrid.map { it.map { c -> IndexChar(c) } }
     private var indexChange = ""
+    private val obstacle = '#'
+    private val guardPathIndicator = 'X'
 
     fun partA(): Int {
         var ranOffTheGrid = false
@@ -14,35 +16,14 @@ class DayFive(path: String) {
             try {
                 for (y in grid.indices) {
                     for (x in grid[0].indices) {
-                        val c = grid[y][x]
-                        when (c) {
-                            '^' -> if (grid[y - 1][x] != '#') {
-                                grid[y - 1][x] = '^'
-                                grid[y][x] = 'X'
-                            } else {
-                                grid[y][x] = '>'
-                            }
-
-                            '>' -> if (grid[y][x + 1] != '#') {
-                                grid[y][x + 1] = '>'
-                                grid[y][x] = 'X'
-                            } else {
-                                grid[y][x] = 'V'
-                            }
-
-                            'V' -> if (grid[y + 1][x] != '#') {
-                                grid[y + 1][x] = 'V'
-                                grid[y][x] = 'X'
-                            } else {
-                                grid[y][x] = '<'
-                            }
-
-                            '<' -> if (grid[y][x - 1] != '#') {
-                                grid[y][x - 1] = '<'
-                                grid[y][x] = 'X'
-                            } else {
-                                grid[y][x] = '^'
-                            }
+                        val state = guardStateFactory(grid[y][x]) ?: continue
+                        val nextIndexDiff = state.getIndexDiffsToCheck()
+                        var nextChar = grid[y + nextIndexDiff.first][x + nextIndexDiff.second]
+                        if (nextChar == obstacle) {
+                            grid[y][x] = state.getTurnCharacter()
+                        } else {
+                            grid[y + nextIndexDiff.first][x + nextIndexDiff.second] = state.getStraightCharacter()
+                            grid[y][x] = guardPathIndicator
                         }
                     }
                 }
@@ -52,7 +33,7 @@ class DayFive(path: String) {
             }
         }
 
-        val cellsVisited = grid.sumOf { it.count { c -> c == 'X' } } + 1
+        val cellsVisited = grid.sumOf { it.count { c -> c == guardPathIndicator } } + 1
         println("Cells visited: $cellsVisited")
         return cellsVisited
     }
@@ -130,6 +111,16 @@ class DayFive(path: String) {
         }
         return false
     }
+
+    private fun guardStateFactory(c: Char): GuardState? {
+        return when (c) {
+            '^' -> NorthGuardState()
+            '>' -> EastGuardState()
+            'V' -> SouthGuardState()
+            '<' -> WestGuardState()
+            else -> null
+        }
+    }
 }
 
 
@@ -142,33 +133,25 @@ interface GuardState {
 }
 
 class NorthGuardState : GuardState {
-    override fun getTurnCharacter(): Char = '>'
-
     override fun getStraightCharacter(): Char = '^'
-
-    override fun getIndexDiffsToCheck() = Pair(0, -1)
+    override fun getTurnCharacter(): Char = '>'
+    override fun getIndexDiffsToCheck() = Pair(-1, 0)
 }
 
 class EastGuardState : GuardState {
-    override fun getTurnCharacter(): Char = 'V'
-
     override fun getStraightCharacter(): Char = '>'
-
-    override fun getIndexDiffsToCheck() = Pair(1, 0)
-}
-
-class SouthGuardState : GuardState {
-    override fun getTurnCharacter(): Char = '<'
-
-    override fun getStraightCharacter(): Char = 'V'
-
+    override fun getTurnCharacter(): Char = 'V'
     override fun getIndexDiffsToCheck() = Pair(0, 1)
 }
 
-class WestGuardState : GuardState {
+class SouthGuardState : GuardState {
+    override fun getStraightCharacter(): Char = 'V'
     override fun getTurnCharacter(): Char = '<'
+    override fun getIndexDiffsToCheck() = Pair(1, 0)
+}
 
-    override fun getStraightCharacter(): Char = '^'
-
-    override fun getIndexDiffsToCheck() = Pair(-1, 0)
+class WestGuardState : GuardState {
+    override fun getStraightCharacter(): Char = '<'
+    override fun getTurnCharacter(): Char = '^'
+    override fun getIndexDiffsToCheck() = Pair(0, -1)
 }
