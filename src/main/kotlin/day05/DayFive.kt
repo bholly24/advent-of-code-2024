@@ -101,35 +101,3 @@ class DayFive(path: String) {
         }
     }
 }
-
-data class IndexChar(var char: Char, var index: Int = 0)
-
-interface GuardState {
-    fun getTurnCharacter(): Char
-    fun getStraightCharacter(): Char
-    fun getIndexDiffsToCheck(): Pair<Int, Int>
-}
-
-class NorthGuardState : GuardState {
-    override fun getStraightCharacter(): Char = '^'
-    override fun getTurnCharacter(): Char = '>'
-    override fun getIndexDiffsToCheck() = Pair(-1, 0)
-}
-
-class EastGuardState : GuardState {
-    override fun getStraightCharacter(): Char = '>'
-    override fun getTurnCharacter(): Char = 'V'
-    override fun getIndexDiffsToCheck() = Pair(0, 1)
-}
-
-class SouthGuardState : GuardState {
-    override fun getStraightCharacter(): Char = 'V'
-    override fun getTurnCharacter(): Char = '<'
-    override fun getIndexDiffsToCheck() = Pair(1, 0)
-}
-
-class WestGuardState : GuardState {
-    override fun getStraightCharacter(): Char = '<'
-    override fun getTurnCharacter(): Char = '^'
-    override fun getIndexDiffsToCheck() = Pair(0, -1)
-}
