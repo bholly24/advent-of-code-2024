@@ -9,6 +9,7 @@ class DayFive(path: String) {
     private var indexChange = ""
     private val obstacle = '#'
     private val guardPathIndicator = 'X'
+    private val untrammeledPathIndicator = '.'
 
     fun partA(): Int {
         var ranOffTheGrid = false
@@ -28,7 +29,6 @@ class DayFive(path: String) {
                     }
                 }
             } catch (e: IndexOutOfBoundsException) {
-                grid.forEach { println(it.joinToString("")) }
                 ranOffTheGrid = true
             }
         }
@@ -39,17 +39,20 @@ class DayFive(path: String) {
     }
 
     fun partB(): Int {
+        partA()
         var loopsCreated = 0
         for (y in indexGrid.indices) {
             for (x in indexGrid[0].indices) {
                 indexGrid = immutableGrid.map { it.map { c -> IndexChar(c) } }
-                if (indexGrid[y][x].char == '.') {
-                    indexGrid[y][x].char = '#'
+                if (grid[y][x] != untrammeledPathIndicator &&
+                    grid[y][x] != obstacle &&
+                    indexGrid[y][x].char == untrammeledPathIndicator) {
+                    indexGrid[y][x].char = obstacle
                     indexChange = "$y,$x"
                     if (guardCaughtInLoop(indexGrid)) {
                         loopsCreated++
                     }
-                    indexGrid[y][x].char = '.'
+                    indexGrid[y][x].char = untrammeledPathIndicator
                 }
             }
         }
@@ -102,7 +105,7 @@ class DayFive(path: String) {
                     }
                 }
                 val m = indexGrid.maxOf { it.maxOf { i -> i.index } }
-                if (m > 4) {
+                if (m > 3) {
                     return true
                 }
             } catch (e: IndexOutOfBoundsException) {
