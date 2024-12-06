@@ -11,24 +11,32 @@ class DayFive(path: String) {
     private val untrammeledPathIndicator = '.'
 
     fun partA(): Int {
-        var ranOffTheGrid = false
-        while (!ranOffTheGrid) {
-            try {
-                for (y in grid.indices) {
-                    for (x in grid[0].indices) {
-                        val state = guardStateFactory(grid[y][x]) ?: continue
-                        val nextIndexDiff = state.getIndexDiffsToCheck()
-                        val nextChar = grid[y + nextIndexDiff.first][x + nextIndexDiff.second]
-                        if (nextChar == obstacle) {
-                            grid[y][x] = state.getTurnCharacter()
-                        } else {
-                            grid[y + nextIndexDiff.first][x + nextIndexDiff.second] = state.getStraightCharacter()
-                            grid[y][x] = guardPathIndicator
-                        }
-                    }
+        var guardIndex = Pair(0, 0)
+        for (y in grid.indices) {
+            for (x in grid[0].indices) {
+                if (grid[y][x] == '^') {
+                    guardIndex = Pair(y, x)
+                    break
                 }
-            } catch (e: IndexOutOfBoundsException) {
-                ranOffTheGrid = true
+            }
+        }
+        while (true) {
+            val y = guardIndex.first
+            val x = guardIndex.second
+            val state = guardStateFactory(grid[y][x]) ?: throw Error("This should be a guard")
+            val nextIndexDiff = state.getIndexDiffsToCheck()
+            val nextY = y + nextIndexDiff.first
+            val nextX = x + nextIndexDiff.second
+            if (nextY !in grid.indices || nextX !in grid[0].indices) {
+                break
+            }
+            val nextChar = grid[y + nextIndexDiff.first][x + nextIndexDiff.second]
+            if (nextChar == obstacle) {
+                grid[y][x] = state.getTurnCharacter()
+            } else {
+                grid[nextY][nextX] = state.getStraightCharacter()
+                guardIndex = Pair(nextY, nextX)
+                grid[y][x] = guardPathIndicator
             }
         }
 
@@ -46,7 +54,8 @@ class DayFive(path: String) {
                 indexGrid = immutableGrid.map { it.map { c -> IndexChar(c) } }
                 if (grid[y][x] != untrammeledPathIndicator &&
                     grid[y][x] != obstacle &&
-                    indexGrid[y][x].char == untrammeledPathIndicator) {
+                    indexGrid[y][x].char == untrammeledPathIndicator
+                ) {
                     indexGrid[y][x].char = obstacle
                     if (guardCaughtInLoop(indexGrid)) {
                         loopsCreated++
@@ -73,7 +82,8 @@ class DayFive(path: String) {
                         if (nextChar == obstacle) {
                             indexGrid[y][x].char = state.getTurnCharacter()
                         } else {
-                            indexGrid[y + nextIndexDiff.first][x + nextIndexDiff.second].char = state.getStraightCharacter()
+                            indexGrid[y + nextIndexDiff.first][x + nextIndexDiff.second].char =
+                                state.getStraightCharacter()
                             indexGrid[y][x].char = guardPathIndicator
                             indexGrid[y][x].index++
                         }
