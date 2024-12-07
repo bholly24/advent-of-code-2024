@@ -1,39 +1,21 @@
 package day06
 
+import profiling.MemoryProfiler
 import java.io.File
 
 class DaySix(path: String) {
     private val equations: List<EquationItems> = File(path).readLines().map { line -> parseLine(line) }
 
     fun partA(): Long {
-        val total: Long = equations.sumOf { if (canBeMadeToWork(it)) it.answer else 0L }
+        val total: Long = equations.sumOf { if (canBeMadeToWork(it, listOf('+', '*'), ::getOperatorOutput)) it.answer else 0L }
         println("Total is $total")
         return total
     }
 
     fun partB(): Long {
-        val total: Long = equations.sumOf { if (canBeMadeToWorkThreeOperators(it)) it.answer else 0L }
+        val total: Long = equations.sumOf { if (canBeMadeToWork(it, listOf('+', '*', '|'), ::getOperatorOutputThreeOptions)) it.answer else 0L }
         println("Total with concat operator is $total")
         return total
-    }
-
-    fun canBeMadeToWork(equationItem: EquationItems): Boolean {
-        val possibleEquations = mutableListOf<MutableList<NumberOperator>>()
-        for (i in equationItem.inputs) {
-            if (possibleEquations.size == 0) {
-                possibleEquations.add(mutableListOf(NumberOperator(i, '+')))
-                possibleEquations.add(mutableListOf(NumberOperator(i, '*')))
-            } else {
-                for (j in possibleEquations.size - 1 downTo 0) {
-                    possibleEquations.add(j + 1, possibleEquations[j].toMutableList())
-                }
-                possibleEquations.chunked(2).forEach {
-                    it[0].add(NumberOperator(i, '+'))
-                    it[1].add(NumberOperator(i, '*'))
-                }
-            }
-        }
-        return possibleEquations.any { equationItem.answer == getOperatorOutput(it) }
     }
 
     fun getOperatorOutput(operators: List<NumberOperator>): Long {
@@ -71,26 +53,26 @@ class DaySix(path: String) {
         return EquationItems(s[0].toLong(), s[1].trim().split(Regex("\\s+")).map(String::toLong))
     }
 
-    private fun canBeMadeToWorkThreeOperators(equationItem: EquationItems): Boolean {
+    private fun canBeMadeToWork(equationItem: EquationItems, operators: List<Char>, calculateTotal: (List<NumberOperator>) -> Long): Boolean {
         val possibleEquations = mutableListOf<MutableList<NumberOperator>>()
         for (i in equationItem.inputs) {
             if (possibleEquations.size == 0) {
-                possibleEquations.add(mutableListOf(NumberOperator(i, '+')))
-                possibleEquations.add(mutableListOf(NumberOperator(i, '*')))
-                possibleEquations.add(mutableListOf(NumberOperator(i, '|')))
+                operators.forEach {
+                    possibleEquations.add(mutableListOf(NumberOperator(i, it)))
+                }
             } else {
                 for (j in possibleEquations.size - 1 downTo 0) {
-                    possibleEquations.add(j + 1, possibleEquations[j].toMutableList())
-                    possibleEquations.add(j + 2, possibleEquations[j].toMutableList())
+                    operators.forEachIndexed { i, _ ->
+                        possibleEquations.add(j + i, possibleEquations[j].toMutableList())
+                    }
                 }
-                possibleEquations.chunked(3).forEach {
-                    it[0].add(NumberOperator(i, '+'))
-                    it[1].add(NumberOperator(i, '*'))
-                    it[2].add(NumberOperator(i, '|'))
+                possibleEquations.chunked(operators.size).forEach {
+                    operators.forEachIndexed { index, o -> it[index].add(NumberOperator(i, o))
+                    }
                 }
             }
         }
-        return possibleEquations.any { equationItem.answer == getOperatorOutputThreeOptions(it) }
+        return possibleEquations.any { equationItem.answer == calculateTotal(it) }
     }
 }
 
