@@ -6,6 +6,7 @@ import day04.DayFour
 import day05.DayFive
 import day06.DaySix
 import day07.DaySeven
+import day08.DayEight
 import fileHelper.FileHelper
 import printer.AdventPrinter
 
@@ -41,27 +42,27 @@ fun main() {
     AdventPrinter.partTwo(3)
     dayThree.partB()
 
-//    AdventPrinter.partOne(4)
-//    val dayFour = DayFour(FileHelper.puzzleFileForDay(4))
-//    dayFour.partA()
-//    AdventPrinter.partTwo(4)
-//    dayFour.partB()
-//
-//    AdventPrinter.partOne(5)
-//    val dayFive = DayFive(FileHelper.puzzleFileForDay(5))
-//    dayFive.partA()
-//
-//    AdventPrinter.partTwo(5)
-//    dayFive.partB()
-//
-//    AdventPrinter.partOne(6)
-//    val daySix = DaySix(FileHelper.puzzleFileForDay(6))
-//    daySix.partA()
-//
-//    AdventPrinter.partTwo(6)
-//    AdventPrinter.tooSlowToRunInAdventLoop(6, 'b')
+    AdventPrinter.partOne(4)
+    val dayFour = DayFour(FileHelper.puzzleFileForDay(4))
+    dayFour.partA()
+    AdventPrinter.partTwo(4)
+    dayFour.partB()
 
-//    daySix.partB()
+    AdventPrinter.partOne(5)
+    val dayFive = DayFive(FileHelper.puzzleFileForDay(5))
+    dayFive.partA()
+
+    AdventPrinter.partTwo(5)
+    dayFive.partB()
+
+    AdventPrinter.partOne(6)
+    val daySix = DaySix(FileHelper.puzzleFileForDay(6))
+    daySix.partA()
+
+    AdventPrinter.partTwo(6)
+    AdventPrinter.tooSlowToRunInAdventLoop(6, 'b')
+
+    daySix.partB()
     AdventPrinter.partOne(7)
     var daySeven = DaySeven(FileHelper.puzzleFileForDay(7))
     daySeven.partA()
@@ -69,5 +70,11 @@ fun main() {
     AdventPrinter.partTwo(7)
     daySeven = DaySeven(FileHelper.puzzleFileForDay(7))
     daySeven.partB()
-    //1398 too high
+
+    AdventPrinter.partOne(8)
+    val dayEight = DayEight(FileHelper.puzzleFileForDay(8))
+    dayEight.partA()
+
+    AdventPrinter.partTwo(8)
+    dayEight.partB()
 }
