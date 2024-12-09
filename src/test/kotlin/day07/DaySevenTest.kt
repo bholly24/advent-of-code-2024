@@ -27,18 +27,18 @@ class DaySevenTest {
 
     @Test
     fun getSlopeOfOne() {
-        val s = DaySeven.getSlope(Item(3, 3, 'a'), Item(1, 1, 'a'))
+        val s = DaySeven.getReducedSlope(Item(3, 3, 'a'), Item(1, 1, 'a'))
         assertEquals(1, s.first)
         assertEquals(1, s.second)
 
-        val d = DaySeven.getSlope(Item(2, 2, 'a'), Item(1, 1, 'a'))
+        val d = DaySeven.getReducedSlope(Item(2, 2, 'a'), Item(1, 1, 'a'))
         assertEquals(1, d.first)
         assertEquals(1, d.second)
     }
 
     @Test
     fun getReducedSlope() {
-        val s = DaySeven.getSlope(Item(4, 8, 'a'), Item(1, 2, 'a'))
+        val s = DaySeven.getReducedSlope(Item(4, 8, 'a'), Item(1, 2, 'a'))
         assertEquals(2, s.first)
         assertEquals(1, s.second)
     }
