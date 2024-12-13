@@ -15,43 +15,41 @@ class DayTen(path: String) {
 
     private fun getMemoizedStones(breaks: List<Int>): Long {
         val stones = startingStones
-        var lTotal = 0L
+        var totalFromFirstBreak = 0L
         var total = 0L
         val firstMemoizationMap = mutableMapOf<Long, Long>()
         val secondMemoizationMap = mutableMapOf<Long, Long>()
 
         stones.forEach {
-            var l = listOf(it)
-            for (i in 0 until breaks[0]) {
-                l = calculateStones(l)
-            }
+            var firstBreakStones = listOf(it)
+            for (i in 0 until breaks[0]) firstBreakStones = calculateStones(firstBreakStones)
 
-            l.forEach { s ->
-                lTotal = 0L
-                if (firstMemoizationMap.containsKey(s)) {
-                    total += firstMemoizationMap.getValue(s)
+            firstBreakStones.forEach { firstBreakStone ->
+                totalFromFirstBreak = 0L
+                if (firstMemoizationMap.containsKey(firstBreakStone)) {
+                    total += firstMemoizationMap.getValue(firstBreakStone)
                 } else {
-                    var sl = listOf(s)
+                    var secondBreakStones = listOf(firstBreakStone)
                     for (i in 0 until breaks[1]) {
-                        sl = calculateStones(sl)
+                        secondBreakStones = calculateStones(secondBreakStones)
                     }
-                    sl.forEach { sQ ->
-                        if (secondMemoizationMap.containsKey(sQ)) {
-                            total += secondMemoizationMap.getValue(sQ)
-                            lTotal += secondMemoizationMap.getValue(sQ)
+                    secondBreakStones.forEach { secondBreakStone ->
+                        if (secondMemoizationMap.containsKey(secondBreakStone)) {
+                            total += secondMemoizationMap.getValue(secondBreakStone)
+                            totalFromFirstBreak += secondMemoizationMap.getValue(secondBreakStone)
                         } else {
-                            var sQL = listOf(sQ)
+                            var finalBreakStones = listOf(secondBreakStone)
                             for (i in 0 until breaks[2]) {
-                                sQL = calculateStones(sQL)
+                                finalBreakStones = calculateStones(finalBreakStones)
                             }
-                            if (secondMemoizationMap.containsKey(sQ)) throw Error("Reassignment is a bug")
-                            secondMemoizationMap[sQ] = sQL.size.toLong()
-                            total += sQL.size
-                            lTotal += sQL.size
+                            if (secondMemoizationMap.containsKey(secondBreakStone)) throw Error("Reassignment is a bug")
+                            secondMemoizationMap[secondBreakStone] = finalBreakStones.size.toLong()
+                            total += finalBreakStones.size
+                            totalFromFirstBreak += finalBreakStones.size
                         }
                     }
-                    if (firstMemoizationMap[s] != null) throw Error("Reassignment is a bug")
-                    firstMemoizationMap[s] = lTotal
+                    if (firstMemoizationMap[firstBreakStone] != null) throw Error("Reassignment is a bug")
+                    firstMemoizationMap[firstBreakStone] = totalFromFirstBreak
                 }
             }
         }
@@ -61,18 +59,19 @@ class DayTen(path: String) {
     }
 
     private fun calculateStones(stones: List<Long>): List<Long> {
-        val newStones = mutableListOf<Long>()
-        stones.forEach {
-            if (it == 0L) {
-                newStones.add(1)
-            } else if ((it.toString().length % 2) == 0) {
-                var s = it.toString()
-                newStones.add(s.substring(0 until s.length / 2).toLong())
-                newStones.add(s.substring(s.length / 2).toLong())
-            } else {
-                newStones.add(it * 2024L)
+        return stones.flatMap {
+            when {
+                it == 0L -> listOf(1)
+                it.toString().length % 2 == 0 -> {
+                    val split = it.toString()
+                    listOf(
+                        split.substring(0 until split.length / 2).toLong(),
+                        split.substring(split.length / 2).toLong()
+                    )
+                }
+
+                else -> listOf(it * 2024L)
             }
         }
-        return newStones
     }
 }
